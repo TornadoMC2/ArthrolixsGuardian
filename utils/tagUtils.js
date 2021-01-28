@@ -8,8 +8,6 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   this.usage = usage
   this.command = command
   
-  let tags = {}
-  
   let subCommands = [
     "create",
     "delete",
@@ -17,8 +15,8 @@ function tagUtils(client, msg, args, prefix, usage, command) {
     "list"
   ]
   
-  this.help = async function() {
-    
+  this.getDB = async function() {
+
     var storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
     if (!storedSettings) {
       // If there are no settings stored for this guild, we create them and try to retrive them again.
@@ -30,17 +28,48 @@ function tagUtils(client, msg, args, prefix, usage, command) {
       storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
     }
 
-    tags = storedSettings.tags
+    return storedSettings
+
+  }
+
+  this.tagExistError = function() {
+    let embed = {
+      title: "Thats not right!",
+      description: `A tag by that name doesn't exist`,
+      color: 0xeb4034,
+    }
+    return {embed}
+  }
+
+  this.tagAlreadyExists = function() {
+    let embed = {
+      title: "Thats not right!",
+      description: `A tag by that name already exists`,
+      color: 0xeb4034,
+    }
+    return {embed}
+  }
+
+  this.incorrectUsageEmbed = function() {
+    let embed = {
+      title: "Thats not right!",
+      description: `The correct way to use this command is \`${this.prefix}${this.usage}\``,
+      color: 0xeb4034,
+      footer: {
+        text: "[] = Required () = Optional"
+      }
+    }
+    return {embed}
+  }
+
+  this.main = async function() {
+    
+    let storedSettings = this.getDB()
     
     if(this.args[0]) {
       
       if(storedSettings.tags.get(this.args[0]) == undefined) {
-        let embed = {
-          title: "Thats not right!",
-          description: `A tag by that name doesn't exist`,
-          color: 0xeb4034,
-        }
-        return {embed}
+        return this.tagExistError()
       }
         
       return storedSettings.tags.get(this.args[0])
@@ -69,39 +98,14 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.create = async function() {
     
-    var storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    if (!storedSettings) {
-      // If there are no settings stored for this guild, we create them and try to retrive them again.
-      const newSettings = new TagSettings({
-        gid: this.msg.guildID,
-        tags: {}
-      });
-      await newSettings.save().catch(()=>{});
-      storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    }
-
-    tags = storedSettings.tags
-    
+    let storedSettings = this.getDB();
     
     if(!this.args[0] || !this.args[1]) {
-      let embed = {
-        title: "Thats not right!",
-        description: `The correct way to use this command is \`${this.prefix}${this.usage}\``,
-        color: 0xeb4034,
-        footer: {
-          text: "[] = Required () = Optional"
-        }
-      }
-      return {embed}
+      return this.incorrectUsageEmbed();
     }
     
     if(storedSettings.tags.get(this.args[0])) {
-      let embed = {
-        title: "Thats not right!",
-        description: `A tag by that name already exists`,
-        color: 0xeb4034,
-      }
-      return {embed}
+      return this.tagAlreadyExists();
     }
     
     let tagName = this.args[0]
@@ -118,40 +122,17 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.delete = async function() {
     
-    var storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    if (!storedSettings) {
-      console.log("creating new settings")
-      // If there are no settings stored for this guild, we create them and try to retrive them again.
-      const newSettings = new TagSettings({
-        gid: this.msg.guildID,
-        tags: {}
-      });
-      await newSettings.save().catch(()=>{});
-      storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
+    let storedSettings = this.getDB()
+    
+    if(!this.args[0]) {
+      return this.incorrectUsageEmbed()
     }
     
-    if(!args[0]) {
-      let embed = {
-        title: "Thats not right!",
-        description: `The correct way to use this command is \`${this.prefix}${this.usage}\``,
-        color: 0xeb4034,
-        footer: {
-          text: "[] = Required () = Optional"
-        }
-      }
-      return {embed}
+    if(storedSettings.tags.get(this.args[0]) == undefined) {
+      return this.tagExistError()
     }
     
-    if(storedSettings.tags.get(args[0]) == undefined) {
-      let embed = {
-        title: "Thats not right!",
-        description: `A tag by that name doesn't exist`,
-        color: 0xeb4034,
-      }
-      return {embed}
-    }
-    
-    storedSettings.tags.delete(args[0])
+    storedSettings.tags.delete(this.args[0])
     
     await storedSettings.save().catch(()=>{});
     
@@ -163,17 +144,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.list = async function() {
     
-    var storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    if (!storedSettings) {
-      console.log("creating new settings")
-      // If there are no settings stored for this guild, we create them and try to retrive them again.
-      const newSettings = new TagSettings({
-        gid: this.msg.guildID,
-        tags: {}
-      });
-      await newSettings.save().catch(()=>{});
-      storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    }
+    let storedSettings = this.getDB()
     
     let entries = storedSettings.tags.entries()
     
@@ -183,8 +154,8 @@ function tagUtils(client, msg, args, prefix, usage, command) {
       ctn += `There are no tags!\n\nCreate some with \`${this.prefix}tag create [name] [contents]\``
     
     for(var i = 0; i < storedSettings.tags.size; i++) {
-      let thing = entries.next()
-      ctn += `${i == 0 ? `` : `\n`}\`${thing.value[0]}\``
+      let next = entries.next()
+      ctn += `${i == 0 ? `` : `\n`}\`${next.value[0]}\``
     }
     
     let embed = {title: `List of Tags`, description: ctn, color: 0x23c248}
@@ -195,37 +166,14 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.edit = async function() {
     
-    var storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    if (!storedSettings) {
-      console.log("creating new settings")
-      // If there are no settings stored for this guild, we create them and try to retrive them again.
-      const newSettings = new TagSettings({
-        gid: this.msg.guildID,
-        tags: {}
-      });
-      await newSettings.save().catch(()=>{});
-      storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
-    }
+    let storedSettings = this.getDB()
     
     if(!args[0] || !args[1]) {
-      let embed = {
-        title: "Thats not right!",
-        description: `The correct way to use this command is \`${this.prefix}${this.usage}\``,
-        color: 0xeb4034,
-        footer: {
-          text: "[] = Required () = Optional"
-        }
-      }
-      return {embed}
+      return this.incorrectUsageEmbed()
     }
     
     if(storedSettings.tags.get(args[0]) == undefined) {
-      let embed = {
-        title: "Thats not right!",
-        description: `A tag by that name doesn't exist`,
-        color: 0xeb4034,
-      }
-      return {embed}
+      return this.tagExistError()
     }
     
     let tagName = this.args[0]
@@ -239,7 +187,6 @@ function tagUtils(client, msg, args, prefix, usage, command) {
     return {embed}
     
   } 
-  
   
 }
 module.exports = tagUtils
