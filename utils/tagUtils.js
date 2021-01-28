@@ -27,7 +27,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
       await newSettings.save().catch(()=>{});
       storedSettings = await TagSettings.findOne({ gid: this.msg.guildID });
     }
-
+    
     return storedSettings
 
   }
@@ -64,7 +64,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
 
   this.main = async function() {
     
-    let storedSettings = this.getDB()
+    let storedSettings = await this.getDB()
     
     if(this.args[0]) {
       
@@ -98,7 +98,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.create = async function() {
     
-    let storedSettings = this.getDB();
+    let storedSettings = await this.getDB();
     
     if(!this.args[0] || !this.args[1]) {
       return this.incorrectUsageEmbed();
@@ -122,7 +122,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.delete = async function() {
     
-    let storedSettings = this.getDB()
+    let storedSettings = await this.getDB()
     
     if(!this.args[0]) {
       return this.incorrectUsageEmbed()
@@ -144,7 +144,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.list = async function() {
     
-    let storedSettings = this.getDB()
+    let storedSettings = await this.getDB()
     
     let entries = storedSettings.tags.entries()
     
@@ -166,7 +166,7 @@ function tagUtils(client, msg, args, prefix, usage, command) {
   
   this.edit = async function() {
     
-    let storedSettings = this.getDB()
+    let storedSettings = await this.getDB()
     
     if(!args[0] || !args[1]) {
       return this.incorrectUsageEmbed()
