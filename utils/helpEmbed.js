@@ -16,8 +16,6 @@ function helpEmbed(page, maxPage, client, botName, commandTypes, author, msg, pr
   if(!this.client.guildPrefixes[this.msg.guildID])
     this.client.registerGuildPrefix(this.msg.guildID, [this.prefix, "@mention"])
   
-  //let prefix = this.client.guildPrefixes[this.msg.guildID][0]
-  
   this.embed = async function() {
     
     if(this.command) {

@@ -184,7 +184,7 @@ client.registerCommand("ping", async (msg, args) => { return new pingEmbed(msg).
 
 const tagUtils = require('./utils/tagUtils.js')
 
-let tagCommand = client.registerCommand("tag", async (msg, args) => { return new tagUtils(client, msg, args, prefix, "tag (name)", tagCommand).help() }, {
+let tagCommand = client.registerCommand("tag", async (msg, args) => { return new tagUtils(client, msg, args, prefix, "tag (name)", tagCommand).main() }, {
   aliases: ["tags"],
   permissionMessage: function() {return noPermissionsEmbed()},
   usage: "tag (name)",
