@@ -14,7 +14,7 @@ function prefixEmbed(client, args, author, msg, prefix) {
   
   this.embed = async function() {
     if(!this.args[0]) {
-      let embed = {title: "Bot Prefix", description: `My prefix for this server is \`${this.client.guildPrefixes[this.msg.guildID][0]}\``}
+      let embed = {title: "Bot Prefix", description: `My prefix for this server is \`${this.client.guildPrefixes[this.msg.guildID][0]}\``, color: 0x23c248}
       return {embed}
     } else {
       
@@ -27,13 +27,13 @@ function prefixEmbed(client, args, author, msg, prefix) {
           gid: this.msg.guildID
         });
         await newSettings.save().catch(()=>{});
-        storedSettings = await GuildSettings.findOne({ gid: msg.guildID });
+        storedSettings = await GuildSettings.findOne({ gid: this.msg.guildID });
       }
       
       storedSettings.prefix = this.args[0]
       await storedSettings.save().catch(()=>{});
       
-      let embed = {title: "Prefix Changed Successfully!", description: `My new prefix for this server is \`${storedSettings.prefix}\``}
+      let embed = {title: "Prefix Changed Successfully!", description: `My new prefix for this server is \`${storedSettings.prefix}\``, color: 0x23c248}
       return {embed}
     }
   }

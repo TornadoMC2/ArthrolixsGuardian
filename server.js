@@ -282,7 +282,6 @@ client.registerCommand("prefix", async (msg, args) => { return new prefixEmbed(c
 
 client.registerCommand("log", async (msg, args) => { console.log("nothing to see here"); return "Logged Results in Console" }, {
   aliases: ["test"],
-  type: "Developer",
   permissionMessage: function() {return noPermissionsEmbed()},
   requirements: {
     userIDs: ["425624104901541888"]
@@ -293,6 +292,7 @@ client.registerCommand("log", async (msg, args) => { console.log("nothing to see
   fullDescription: "Logs a set item into the console. Used by the developer to debug."
 })
 
+// ---------------------------------------------
 
 async function clean(text) {
   if (typeof(text) === "string")
@@ -314,8 +314,7 @@ let evalCommand = client.registerCommand("eval", async (msg, args) => {
       return `\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``
     }
   }, {
-  type: "Developer",
-  permissionMessage: function() {return noPermissionsEmbed()},
+  permissionMessage: function() { return noPermissionsEmbed() },
   requirements: {
     userIDs: ["425624104901541888"]
   },
