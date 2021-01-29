@@ -22,7 +22,7 @@ function helpEmbed(page, maxPage, client, botName, commandTypes, author, msg, pr
       let embed = {}
       if(!commands.hasOwnProperty(command)) return {embed:{title: ":no_entry: Error", description: "This command does not exist", color: 0xff0000}}
       embed.title = `Command Help`
-      embed.description = `\`${prefix}${commands[this.command].usage}\`\n\n${commands[this.command].fullDescription}`
+      embed.description = `\`${this.prefix}${commands[this.command].usage}\`\n\n${commands[this.command].fullDescription}`
       if(commands[this.command].aliases[0])
         embed.description += `\n\n**Aliases**: ${commands[this.command].aliases}`
       if(Object.keys(commands[this.command].subcommands).length > 0) {
