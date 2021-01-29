@@ -245,8 +245,6 @@ client.registerCommand("kick", async (msg, args) => { return new moderationUtils
   usage: "kick [user] (reason)",
   description: "Kicks User",
   fullDescription: "Allows moderators to kick a user for a specified reason",
-  //argsRequired: true,
-  //invalidUsageMessage: function() { return incorrectUsageEmbed(this.usage) }
 })
 
 // ---------------------------------------------
