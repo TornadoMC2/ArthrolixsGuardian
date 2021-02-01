@@ -4,6 +4,7 @@ const fs = require('fs')
 const mongoose = require("mongoose");
 const GuildSettings = require("./models/guildSettings");
 const tags = require('./models/tags')
+const TicketSettings = require('./models/tickets')
 
 var client = new Eris.CommandClient(process.env.TOKEN, {
   getAllUsers: true,
@@ -28,6 +29,7 @@ client.on('ready', async () => {
 let prefix = ""
 
 client.on('messageCreate', async (msg) => {
+
   var storedSettings = await GuildSettings.findOne({ gid: msg.guildID });
   if (!storedSettings) {
     // If there are no settings stored for this guild, we create them and try to retrive them again.
@@ -41,13 +43,13 @@ client.on('messageCreate', async (msg) => {
   await client.registerGuildPrefix(msg.guildID, [storedSettings.prefix, "@mention"])
   
   prefix = storedSettings.prefix
-  
+
 })
 
 let commandTypes = {
   general: ["help", "ping", "tag"],
   moderation: ["kick", "ban"],
-  configuration: ["prefix"],
+  configuration: ["prefix", "ticket"],
   developer: ["log", "eval"]
 }
 
@@ -278,6 +280,21 @@ client.registerCommand("prefix", async (msg, args) => { return new prefixEmbed(c
   fullDescription: "Lets people with the permission `Manage Server` set the server's prefix"
 })
 
+const ticketUtils = require('./utils/ticketUtils.js')
+
+let ticketCommand = client.registerCommand("ticket", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).main() }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    permissions: {
+      "manageGuild": true
+    }
+  },
+  usage: "ticket",
+  desription: "Main ticket command",
+  fullDescription: "Main ticket command"
+})
+
+
 // ---------------------------------------------
 
 client.registerCommand("log", async (msg, args) => { console.log("nothing to see here"); return "Logged Results in Console" }, {
@@ -333,5 +350,30 @@ evalCommand.registerSubcommand("test", async (msg, args) => { return "test" }, {
   usage: 'eval test',
   description: 'test subcommand'
 })
+
+
+// ---------------------------------------------------------------------------
+
+client.on('messageReactionAdd', async (msg, emoji) => {
+
+  var storedSettings = await TicketSettings.findOne({ gid: msg.guildID });
+  if (!storedSettings) {
+    // If there are no settings stored for this guild, we create them and try to retrive them again.
+    const newSettings = new TicketSettings({
+      gid: msg.guildID,
+      ticketCategory: 0,
+      ticketCreationMessageID: 0,
+      ticketCreationMessageEmojiID: 0
+    });
+    await newSettings.save().catch(()=>{});
+    storedSettings = await TicketSettings.findOne({ gid: msg.guildID });
+  }
+
+  if(msg.id !== storedSettings.ticketCreationMessageID || emoji.id !== storedSettings.ticketCreationMessageEmojiID) return
+
+  
+})
+
+
 
 client.connect()
