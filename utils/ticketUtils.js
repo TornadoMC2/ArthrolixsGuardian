@@ -84,15 +84,29 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
     let storedSettings = await this.getDB()
 
-    // if(storedSettings.ticketCategory == 0) {
-    //   return this.notSetup()
-    // }
+    if(storedSettings.ticketCategory == 0) {
+      return this.notSetup()
+    }
 
-    // if(this.channel.parentID !== storedSettings.ticketCategory) {
-    //   return this.notATicket()
-    // }
+    if(this.channel.parentID !== storedSettings.ticketCategory) {
+      return this.notATicket()
+    }
 
-    await msg.channel.delete()
+    return msg.channel.delete()
+
+  }
+
+  this.dev = async function() {
+
+    let storedSettings = await this.getDB()
+
+    storedSettings.ticketCategory = 805966702076100609
+    storedSettings.ticketCreationMessageID = 805966807693000764
+    storedSettings.ticketCreationMessageEmojiID = 805966807693000764
+
+    await storedSettings.save().catch(()=>{});
+
+    return "ok"
 
   }
 
