@@ -1,14 +1,16 @@
 const TicketSettings = require('../models/tickets')
-function ticketUtils(client, msg, args, author, prefix) {
+function ticketUtils(client, msg, args, author, prefix, command) {
 
   this.client = client
   this.msg = msg
   this.args = args
   this.author = author
   this.prefix = prefix
+  this.command = command
 
   let subCommands = [
-    
+    "create",
+    "close"
   ]
 
   this.notSetup = async function() {

@@ -282,7 +282,7 @@ client.registerCommand("prefix", async (msg, args) => { return new prefixEmbed(c
 
 const ticketUtils = require('./utils/ticketUtils.js')
 
-let ticketCommand = client.registerCommand("ticket", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).main() }, {
+let ticketCommand = client.registerCommand("ticket", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix, ticketCommand).main() }, {
   permissionMessage: function() {return noPermissionsEmbed()},
   requirements: {
     permissions: {
