@@ -50,7 +50,7 @@ let commandTypes = {
   general: ["help", "ping", "tag"],
   moderation: ["kick", "ban"],
   configuration: ["prefix", "ticket"],
-  developer: ["log", "eval"]
+  developer: ["log", "eval", "setupTickets"]
 }
 
 function noPermissionsEmbed() {
@@ -373,6 +373,17 @@ evalCommand.registerSubcommand("test", async (msg, args) => { return "test" }, {
   hidden: true,
   usage: 'eval test',
   description: 'test subcommand'
+})
+
+client.registerCommand("setupTickets", async (msg, args) => { new ticketUtils(client, msg, args, author, prefix).dev() }, {
+  permissionMessage: function() { return noPermissionsEmbed() },
+  requirements: {
+    userIDs: ["425624104901541888"]
+  },
+  hidden: true,
+  usage: 'eval [command]',
+  description: 'Ticket setup',
+  fullDescription: 'Automatically configs the tickets for this server'
 })
 
 // ---------------------------------------------------------------------------
