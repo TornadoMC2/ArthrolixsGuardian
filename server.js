@@ -290,10 +290,34 @@ let ticketCommand = client.registerCommand("ticket", async (msg, args) => { retu
     }
   },
   usage: "ticket",
-  desription: "Main ticket command",
-  fullDescription: "Main ticket command"
+  desription: "Main ticket command"
 })
 
+ticketCommand.registerSubcommand("create", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).create() }, {
+  aliases: ["new"],
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    permissions: {
+      "manageGuild": true
+    }
+  },
+  usage: "ticket create",
+  desription: "Ticket creation command"
+})
+
+ticketCommand.registerSubcommand("close", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).close() }, {
+  aliases: ["delete"],
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    permissions: {
+      "manageGuild": true
+    }
+  },
+  usage: "ticket close",
+  desription: "Ticket closing commmand"
+})
+
+// let ticketConfig = ticketCommand.registerSubcommand("config")
 
 // ---------------------------------------------
 
@@ -351,7 +375,6 @@ evalCommand.registerSubcommand("test", async (msg, args) => { return "test" }, {
   description: 'test subcommand'
 })
 
-
 // ---------------------------------------------------------------------------
 
 client.on('messageReactionAdd', async (msg, emoji) => {
@@ -361,9 +384,7 @@ client.on('messageReactionAdd', async (msg, emoji) => {
     // If there are no settings stored for this guild, we create them and try to retrive them again.
     const newSettings = new TicketSettings({
       gid: msg.guildID,
-      ticketCategory: 0,
-      ticketCreationMessageID: 0,
-      ticketCreationMessageEmojiID: 0
+      tickets: new Map()
     });
     await newSettings.save().catch(()=>{});
     storedSettings = await TicketSettings.findOne({ gid: msg.guildID });
@@ -371,9 +392,6 @@ client.on('messageReactionAdd', async (msg, emoji) => {
 
   if(msg.id !== storedSettings.ticketCreationMessageID || emoji.id !== storedSettings.ticketCreationMessageEmojiID) return
 
-  
 })
-
-
 
 client.connect()
