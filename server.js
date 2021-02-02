@@ -290,7 +290,7 @@ let ticketCommand = client.registerCommand("ticket", async (msg, args) => { retu
     }
   },
   usage: "ticket",
-  desription: "Main ticket command"
+  description: "Main ticket command"
 })
 
 ticketCommand.registerSubcommand("create", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).create() }, {
@@ -302,7 +302,7 @@ ticketCommand.registerSubcommand("create", async (msg, args) => { return new tic
     }
   },
   usage: "ticket create",
-  desription: "Ticket creation command"
+  description: "Ticket creation command"
 })
 
 ticketCommand.registerSubcommand("close", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).close() }, {
@@ -314,7 +314,7 @@ ticketCommand.registerSubcommand("close", async (msg, args) => { return new tick
     }
   },
   usage: "ticket close",
-  desription: "Ticket closing commmand"
+  description: "Ticket closing commmand"
 })
 
 // let ticketConfig = ticketCommand.registerSubcommand("config")
