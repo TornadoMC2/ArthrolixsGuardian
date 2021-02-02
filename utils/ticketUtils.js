@@ -16,7 +16,15 @@ function ticketUtils(client, msg, args, author, prefix, command) {
   this.notSetup = async function() {
     let embed = {
       title: "Thats not right!",
-      description: `Please setup tickets with \`${this.prefix}ticket config\``,
+      description: `Please setup tickets with \`${this.prefix}ticket setup\``,
+      color: 0xeb4034,
+    }
+    return {embed}
+  }
+  this.notATicket = async function() {
+    let embed = {
+      title: "Thats not right!",
+      description: `This is not a ticket!`,
       color: 0xeb4034,
     }
     return {embed}
@@ -28,8 +36,7 @@ function ticketUtils(client, msg, args, author, prefix, command) {
     if (!storedSettings) {
       // If there are no settings stored for this guild, we create them and try to retrive them again.
       const newSettings = new TicketSettings({
-        gid: this.msg.guildID,
-        tickets: new Map()
+        gid: this.msg.guildID
       });
       await newSettings.save().catch(()=>{});
       storedSettings = await TicketSettings.findOne({ gid: this.msg.guildID });
@@ -73,13 +80,19 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
   }
 
-  this.delete = async function() {
+  this.close = async function() {
 
     let storedSettings = await this.getDB()
 
-    if(storedSettings.ticketCategory == 0) {
-      return this.notSetup()
-    }
+    // if(storedSettings.ticketCategory == 0) {
+    //   return this.notSetup()
+    // }
+
+    // if(this.channel.parentID !== storedSettings.ticketCategory) {
+    //   return this.notATicket()
+    // }
+
+    await msg.channel.delete()
 
   }
 

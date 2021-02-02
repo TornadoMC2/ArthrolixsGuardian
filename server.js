@@ -383,8 +383,7 @@ client.on('messageReactionAdd', async (msg, emoji) => {
   if (!storedSettings) {
     // If there are no settings stored for this guild, we create them and try to retrive them again.
     const newSettings = new TicketSettings({
-      gid: msg.guildID,
-      tickets: new Map()
+      gid: msg.guildID
     });
     await newSettings.save().catch(()=>{});
     storedSettings = await TicketSettings.findOne({ gid: msg.guildID });
