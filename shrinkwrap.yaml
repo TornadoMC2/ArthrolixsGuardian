@@ -3,6 +3,7 @@ dependencies:
   eris: 0.14.0
   express: 4.17.1
   fs: 0.0.2
+  minecraft-server-util: 3.4.3
   mongodb: 3.6.3
   mongoose: 5.11.13
   node-fetch: 2.6.1
@@ -33,6 +34,12 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha512-Il80Qs2WjYlJIBNzNkK6KYqlVMTbZLXgHx2oT0pU/fjRHyEp+PEfEPY0R3WCwAGVOtauxh1hOxNgIf5bv7dQpA==
+  /ansi-styles/5.1.0:
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-osxifZo3ar56+e8tdYreU6p8FZGciBHo5O0JoDAxMUqZuyNUb+yHEwYtJZ+Z32R459jEgtwVf1u8D7qYwU0l6w==
   /array-flatten/1.1.1:
     dev: false
     resolution:
@@ -340,6 +347,14 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==
+  /minecraft-server-util/3.4.3:
+    dependencies:
+      ansi-styles: 5.1.0
+    dev: false
+    engines:
+      node: '>=10.0.0'
+    resolution:
+      integrity: sha512-fYGmICft3ljTYsiqEIINi23gywR4LFXQLEMYKr+OAwWs2KjuLJIo/3N11lW21pkiRcFpYghbjY1V23H1MaukhQ==
   /mongodb/3.6.3:
     dependencies:
       bl: 2.2.1
@@ -662,6 +677,7 @@ specifiers:
   eris: ^0.14.0
   express: ^4.17.1
   fs: ^0.0.2
+  minecraft-server-util: ^3.4.2
   mongodb: ^3.6.3
   mongoose: ^5.11.13
   node-fetch: ^2.6.1
