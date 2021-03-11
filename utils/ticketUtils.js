@@ -74,40 +74,117 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
     let storedSettings = await this.getDB()
 
-    if(storedSettings.ticketCategory == 0) {
+    if(storedSettings.ticketCategory == "null" || storedSettings.ticketStaffRoleID == "null") {
       return this.notSetup()
     }
+    
+    let name = `ticket-${storedSettings.tickets}`
+    
+    storedSettings.tickets += 1
 
+    await this.client.createChannel(this.msg.guildID, name, 0, {
+      parentID: storedSettings.ticketCategory,
+      permissionOverwrites: [
+        {
+          id: this.msg.guildID,
+          type: 0,
+          deny: 1024
+        },
+        {
+          id: this.author,
+          type: 1,
+          allow: 1024
+        },
+        {
+          id: storedSettings.ticketStaffRoleID,
+          type: 0,
+          allow: 1024
+        }
+      ]
+    })
+    
+    await storedSettings.save().catch(()=>{})
+    
+    let embed = {
+      title: `Ticket Created Successfully`,
+      description : `Please look for your ticket by scrolling down!`,
+      color: 0x23c248,
+    }
+    
+    return {embed}
+    
   }
 
   this.close = async function() {
 
     let storedSettings = await this.getDB()
 
-    if(storedSettings.ticketCategory == 0) {
-      return this.notSetup()
-    }
+    // if(storedSettings.ticketCategory == 0) {
+    //   return this.notSetup()
+    // }
 
-    if(this.channel.parentID !== storedSettings.ticketCategory) {
-      return this.notATicket()
-    }
+    // if(this.channel.parentID !== storedSettings.ticketCategory) {
+    //   return this.notATicket()
+    // }
 
-    return msg.channel.delete()
+    await msg.channel.delete()
 
   }
-
-  this.dev = async function() {
-
+  
+  this.auto = async function() {
+    
     let storedSettings = await this.getDB()
-
-    storedSettings.ticketCategory = 805966702076100609
-    storedSettings.ticketCreationMessageID = 805966807693000764
-    storedSettings.ticketCreationMessageEmojiID = 805966807693000764
-
-    await storedSettings.save().catch(()=>{});
-
-    return "ok"
-
+    
+    storedSettings.ticketCategory = "805966702076100609"
+    storedSettings.ticketCreationMessageID = "818549181672325160"
+    
+    await storedSettings.save().catch(()=>{})
+    
+    console.log(this.author)
+    console.log(this.msg.guildID)
+    
+    await this.client.createChannel(this.msg.guildID, "test-ticket", 0, {
+      parentID: storedSettings.ticketCategory,
+      permissionOverwrites: [
+        {
+          id: this.msg.guildID,
+          type: 0,
+          deny: 1024
+        },
+        {
+          id: this.author,
+          type: 1,
+          allow: 1024
+        },
+      ]
+    })
+    
+    return "Creating Channel..."
+    
+  }
+  
+  
+  this.dev = async function() {
+    
+    let storedSettings = await this.getDB()
+    
+    let index = args[0]
+    let oldValue = storedSettings[index]
+    
+    args.shift()
+    
+    storedSettings[index] = args.join(" ")
+    
+    await storedSettings.save().catch(()=>{})
+    
+    let embed = {
+      title: `Updated Database Successfully`,
+      description : `Changed Values\n\`${index}\`: \`${oldValue}\` -> \`${storedSettings[index]}\``,
+      color: 0x23c248,
+    }
+    
+    return {embed}
+    
   }
 
 }

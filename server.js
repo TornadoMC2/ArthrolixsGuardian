@@ -47,10 +47,10 @@ client.on('messageCreate', async (msg) => {
 })
 
 let commandTypes = {
-  general: ["help", "ping", "tag"],
+  general: ["help", "ping", "tag", "server"],
   moderation: ["kick", "ban"],
   configuration: ["prefix", "ticket"],
-  developer: ["log", "eval", "setupTickets"]
+  developer: ["log", "eval", "dev"]
 }
 
 function noPermissionsEmbed() {
@@ -235,6 +235,28 @@ tagCommand.registerSubcommand("list", async (msg, args) => { return new tagUtils
 
 // ---------------------------------------------
 
+const minecraftUtils = require('./utils/minecraftUtils.js')
+
+let serverCommand = client.registerCommand("server", async(msg, args) => { return new minecraftUtils(client, msg, args, prefix, serverCommand).main() }, {
+  aliases: ["mc"],
+  usage: "server",
+  description: "Main command for getting server info"
+})
+
+serverCommand.registerSubcommand("info", async(msg, args) => { return new minecraftUtils(client, msg, args, prefix).getInfo() }, {
+  aliases: ['i'],
+  usage: "server info",
+  description: "Gets basic information about the server"
+})
+
+serverCommand.registerSubcommand("players", async(msg, args) => { return new minecraftUtils(client, msg, args, prefix).players() }, {
+  aliases: ['online', 'p', 'o'],
+  usage: "server players",
+  description: "Shows online players"
+})
+
+// ---------------------------------------------
+
 const moderationUtils = require('./utils/moderationUtils.js')
 
 client.registerCommand("kick", async (msg, args) => { return new moderationUtils(client, msg, args, "kick [user] (reason)").kick() }, {
@@ -282,18 +304,18 @@ client.registerCommand("prefix", async (msg, args) => { return new prefixEmbed(c
 
 const ticketUtils = require('./utils/ticketUtils.js')
 
-let ticketCommand = client.registerCommand("ticket", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix, ticketCommand).main() }, {
+let ticketCommand = client.registerCommand("ticket", async (msg, args) => { author = msg.author.id; return new ticketUtils(client, msg, args, author, prefix, ticketCommand).main() }, {
   permissionMessage: function() {return noPermissionsEmbed()},
-  requirements: {
+  /*requirements: {
     permissions: {
       "manageGuild": true
     }
-  },
+  },*/
   usage: "ticket",
   description: "Main ticket command"
 })
 
-ticketCommand.registerSubcommand("create", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).create() }, {
+ticketCommand.registerSubcommand("create", async (msg, args) => { author = msg.author.id; return new ticketUtils(client, msg, args, author, prefix).create() }, {
   aliases: ["new"],
   permissionMessage: function() {return noPermissionsEmbed()},
   requirements: {
@@ -305,7 +327,7 @@ ticketCommand.registerSubcommand("create", async (msg, args) => { return new tic
   description: "Ticket creation command"
 })
 
-ticketCommand.registerSubcommand("close", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).close() }, {
+ticketCommand.registerSubcommand("close", async (msg, args) => { author = msg.author.id; return new ticketUtils(client, msg, args, author, prefix).close() }, {
   aliases: ["delete"],
   permissionMessage: function() {return noPermissionsEmbed()},
   requirements: {
@@ -317,6 +339,17 @@ ticketCommand.registerSubcommand("close", async (msg, args) => { return new tick
   description: "Ticket closing commmand"
 })
 
+ticketCommand.registerSubcommand("auto", async (msg, args) => { author = msg.author.id; return new ticketUtils(client, msg, args, author, prefix).auto() }, {
+  aliases: ["autoSetup"],
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    permissions: {
+      "manageGuild": true
+    }
+  },
+  usage: "ticket auto",
+  description: "Ticket closing commmand"
+})
 // let ticketConfig = ticketCommand.registerSubcommand("config")
 
 // ---------------------------------------------
@@ -375,15 +408,62 @@ evalCommand.registerSubcommand("test", async (msg, args) => { return "test" }, {
   description: 'test subcommand'
 })
 
-client.registerCommand("setupTickets", async (msg, args) => { new ticketUtils(client, msg, args, author, prefix).dev() }, {
-  permissionMessage: function() { return noPermissionsEmbed() },
+const devUtils = require('./utils/devUtils')
+
+let devCommand = client.registerCommand("dev", async (msg, args) => { return "dev" }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
   requirements: {
     userIDs: ["425624104901541888"]
   },
   hidden: true,
-  usage: 'eval [command]',
-  description: 'Ticket setup',
-  fullDescription: 'Automatically configs the tickets for this server'
+  usage: 'dev',
+  description: 'Main command for the developer'
+})
+
+devCommand.registerSubcommand("modifydb", async(msg, args) => { 
+  if(!args[2]) return "do the command right mr dev"
+  
+  if(args[0] == "guild") { return new devUtils(client, msg, args).guild() } 
+  else if(args[0] == "tags") { return new devUtils(client, msg, args).tags() } 
+  else if(args[0] == "tickets") { return new devUtils(client, msg, args).tickets() }
+}, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    userIDs: ["425624104901541888"]
+  },
+  hidden: true,
+  usage: 'dev modifydb [database] [index] [value]',
+  description: 'Database modification command'
+})
+
+devCommand.registerSubcommand("stop", async(msg, args) => { return new devUtils(client, msg, args).stop() }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    userIDs: ["425624104901541888"]
+  },
+  hidden: true,
+  usage: 'dev stop',
+  description: 'Stops the bot'
+})
+
+devCommand.registerSubcommand("test", async(msg, args) => { return new minecraftUtils(client, msg, args).getInfo() }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    userIDs: ["425624104901541888"]
+  },
+  hidden: true,
+  usage: 'dev test',
+  description: 'Runs a test'
+})
+
+devCommand.registerSubcommand("console", async(msg, args) => { return new minecraftUtils(client, msg, args).console() }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    userIDs: ["425624104901541888"]
+  },
+  hidden: true,
+  usage: 'dev console',
+  description: 'Runs a command from the minecraft server'
 })
 
 // ---------------------------------------------------------------------------
@@ -401,6 +481,8 @@ client.on('messageReactionAdd', async (msg, emoji) => {
   }
 
   if(msg.id !== storedSettings.ticketCreationMessageID || emoji.id !== storedSettings.ticketCreationMessageEmojiID) return
+  
+  console.log("pp")
 
 })
 

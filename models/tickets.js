@@ -4,9 +4,11 @@ const { Schema, model } = require("mongoose");
 // We declare new schema.
 const ticketSettingsSchema = new Schema({
   gid: { type: String },
-  ticketCategory: { type: Number, default: 0 },
-  ticketCreationMessageID: { type: Number, default: 0 },
-  ticketCreationMessageEmojiID: { type: Number, default: 0 }
+  ticketCategory: { type: String, default: "null" },
+  ticketCreationMessageID: { type: String, default: "null" },
+  ticketCreationMessageEmojiID: { type: String, default: "null" },
+  ticketStaffRoleID: { type: String, default: "null" },
+  tickets: { type: Number, default: 0 }
 });
 
 // We export it as a mongoose model.
