@@ -186,7 +186,6 @@ function ticketUtils(client, msg, args, author, prefix, command) {
     return {embed}
     
   }
-  
 
 }
 module.exports = ticketUtils

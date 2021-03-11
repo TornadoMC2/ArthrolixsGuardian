@@ -350,7 +350,6 @@ ticketCommand.registerSubcommand("auto", async (msg, args) => { author = msg.aut
   usage: "ticket auto",
   description: "Ticket closing commmand"
 })
-
 // let ticketConfig = ticketCommand.registerSubcommand("config")
 
 // ---------------------------------------------
@@ -466,10 +465,6 @@ devCommand.registerSubcommand("console", async(msg, args) => { return new minecr
   usage: 'dev console',
   description: 'Runs a command from the minecraft server'
 })
-
-
-
-
 
 // ---------------------------------------------------------------------------
 
