@@ -77,6 +77,7 @@ function minecraftUtils(client, msg, args, prefix, command) {
     const server = new utils.RCON('51.79.105.235', { port: 8145, password: process.env.RCON_PASS})
     
     server.on('output', (message) => {
+      console.log("e")
       console.log(message)
     })
     
