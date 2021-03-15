@@ -74,14 +74,14 @@ function minecraftUtils(client, msg, args, prefix, command) {
   
   this.console = async function() {
     
-    const client = new utils.RCON('51.79.105.235', { port: 8145, password: process.env.RCON_PASS})
+    const server = new utils.RCON('51.79.105.235', { port: 8145, password: process.env.RCON_PASS})
     
-    client.on('output', (message) => {
+    server.on('output', (message) => {
       console.log(message)
     })
     
-    client.connect().then(async () => {
-      await client.run(args.join(" ")).then(() => { client.close() }).catch((e) => { console.log(e) })
+    server.connect().then(async () => {
+      await server.run(args.join(" ")).then(() => { server.close() }).catch((e) => { console.log(e) })
     })
     
   }
