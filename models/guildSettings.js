@@ -5,6 +5,7 @@ const { Schema, model } = require("mongoose");
 const guildSettingSchema = new Schema({
   gid: { type: String },
   prefix: { type: String, default: "," },
+  test: { type: String }
 });
 
 // We export it as a mongoose model.

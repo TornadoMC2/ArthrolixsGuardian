@@ -33,7 +33,7 @@ function minecraftUtils(client, msg, args, prefix, command) {
     
     let data;    
     
-    await utils.queryFull('51.79.105.235', { port: 25582 }).then(res => {
+    await utils.queryFull('51.79.105.235', { port: 25582, timeout: 10000 }).then(res => {
       data = res
     })
     
@@ -51,7 +51,7 @@ function minecraftUtils(client, msg, args, prefix, command) {
     
     let data;    
     
-    await utils.queryFull('51.79.105.235', { port: 25582 }).then(res => {
+    await utils.queryFull('51.79.105.235', { port: 25582, timeout: 10000 }).then(res => {
       data = res
     })
     

@@ -302,6 +302,18 @@ client.registerCommand("prefix", async (msg, args) => { return new prefixEmbed(c
   fullDescription: "Lets people with the permission `Manage Server` set the server's prefix"
 })
 
+// ---------------------------------------------
+
+const configUtils = require('./utils/configUtils.js')
+
+client.registerCommand("config", async (msg, args) => { return new configUtils(client, msg, args).main() }, {
+  usage: "config",
+  desription: "Shows the main menu for setting up configs",
+  fullDescription: "Shows the main menu for server configuration that shows which settings are enabled and/or what value they have"
+})
+
+// ---------------------------------------------
+
 const ticketUtils = require('./utils/ticketUtils.js')
 
 let ticketCommand = client.registerCommand("ticket", async (msg, args) => { author = msg.author.id; return new ticketUtils(client, msg, args, author, prefix, ticketCommand).main() }, {
