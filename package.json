@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "fs": "^0.0.2",
     "minecraft-server-util": "^3.4.3",
-    "mongodb": "^3.6.3",
+    "mongodb": "^3.6.6",
     "mongoose": "^5.12.1",
     "node-fetch": "^2.6.1"
   },
