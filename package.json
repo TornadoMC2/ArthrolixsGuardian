@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "autocorrect": "^1.2.0",
-    "eris": "^0.14.0",
+    "eris": "^0.15.1",
     "express": "^4.17.1",
     "fs": "^0.0.2",
     "minecraft-server-util": "^3.4.3",
