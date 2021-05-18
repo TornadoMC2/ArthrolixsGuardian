@@ -11,7 +11,7 @@ var client = new Eris.CommandClient(process.env.TOKEN, {
   intents: ["guildMembers", "guilds", "guildMessages", "guildMessageReactions"]
 }, {
   defaultHelpCommand: false,
-  description: "A Discord bot that gets bazaar stats from Hypixel",
+  description: "An advanced Discord bot for moderating a Discord server",
   prefix: [",", "@mention"]
 })
 
