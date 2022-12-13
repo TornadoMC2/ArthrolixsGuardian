@@ -10,7 +10,8 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
   let subCommands = [
     "create",
-    "close"
+    "close",
+    "setup"
   ]
 
   this.notSetup = async function() {
@@ -96,6 +97,10 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
   }
 
+  this.setup = async function() {
+
+  }
+
   this.dev = async function() {
 
     let storedSettings = await this.getDB()
@@ -106,7 +111,7 @@ function ticketUtils(client, msg, args, author, prefix, command) {
 
     await storedSettings.save().catch(()=>{});
 
-    return "ok"
+    return "ok";
 
   }
 

@@ -317,6 +317,17 @@ ticketCommand.registerSubcommand("close", async (msg, args) => { return new tick
   description: "Ticket closing commmand"
 })
 
+ticketCommand.registerSubcommand("setup", async (msg, args) => { return new ticketUtils(client, msg, args, author, prefix).setup() }, {
+  permissionMessage: function() {return noPermissionsEmbed()},
+  requirements: {
+    permissions: {
+      "manageGuild": true
+    }
+  },
+  usage: "ticket setup (ticket category id) (ticket message id)",
+  description: "Ticket setup command"
+})
+
 // let ticketConfig = ticketCommand.registerSubcommand("config")
 
 // ---------------------------------------------
